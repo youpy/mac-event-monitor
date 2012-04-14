@@ -1,24 +1,20 @@
-# Mac::Event::Monitor
+# mac-event-monitor
 
-TODO: Write a gem description
+A Library to Monitor User Interaction
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'mac-event-monitor'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install mac-event-monitor
+ $ gem install mac-event-monitor
 
 ## Usage
 
-TODO: Write usage instructions here
+ require 'mac-event-monitor'
+
+ monitor = Mac::EventMonitor::Monitor.new
+ monitor.add_listener(:mouse_down) do |event|
+   puts [event.location.x, event.location.y].join(',')
+ end
+ monitor.run
 
 ## Contributing
 
