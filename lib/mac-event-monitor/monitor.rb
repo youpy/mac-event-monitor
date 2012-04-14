@@ -10,8 +10,8 @@ module Mac
         @listeners[type] << block
       end
 
-      def run
-        run_forever
+      def run(stop_after = nil)
+        run_app(stop_after)
       end
 
       def receive_event(str)

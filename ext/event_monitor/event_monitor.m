@@ -33,28 +33,51 @@
     }];
 }
 
+- (void)onTimeout:(NSTimer *)timer {
+  NSEvent *event;
+
+  [[NSApplication sharedApplication] stop:nil];
+  //[NSEvent removeMonitor:eventMonitor];
+
+  // http://www.cocoabuilder.com/archive/cocoa/219842-nsapp-stop.html
+  event = [NSEvent otherEventWithType: NSApplicationDefined
+                                      location: NSMakePoint(0,0)
+                                 modifierFlags: 0
+                                     timestamp: 0.0
+                                  windowNumber: 0
+                                       context: nil
+                                       subtype: 0
+                                         data1: 0
+                                         data2: 0];
+  [NSApp postEvent: event atStart: true];
+}
+
 @end
 
 static VALUE rb_cMonitor;
 
-static VALUE cMonitor_run_forever(int argc, VALUE *argv, VALUE self)
+static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
 {
   EventMonitorAppDelegate *delegate;
+  VALUE stopAfter;
+
+  rb_scan_args(argc, argv, "1", &stopAfter);
 
   delegate = [EventMonitorAppDelegate new];
   delegate.rb_monitor = self;
 
   [NSApplication sharedApplication];
   [NSApp setDelegate: delegate];
+
+  if(stopAfter) {
+    [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)NUM2INT(stopAfter)
+                                     target:delegate
+                                   selector:@selector(onTimeout:)
+                                   userInfo:nil
+                                    repeats:NO];
+  }
+
   [NSApp run];
-
-  return Qnil;
-}
-
-static VALUE cMonitor_stop(int argc, VALUE *argv, VALUE self)
-{
-  [NSApplication sharedApplication];
-  [NSApp stop:nil];
 
   return Qnil;
 }
@@ -65,6 +88,5 @@ void Init_event_monitor(void){
   rb_mMac = rb_define_module("Mac");
   rb_mEventMonitor = rb_define_module_under(rb_mMac, "EventMonitor");
   rb_cMonitor = rb_define_class_under(rb_mEventMonitor, "Monitor", rb_cObject);
-  rb_define_method(rb_cMonitor, "stop", cMonitor_stop, -1);
-  rb_define_method(rb_cMonitor, "run_forever", cMonitor_run_forever, -1);
+  rb_define_method(rb_cMonitor, "run_app", cMonitor_run_app, -1);
 }

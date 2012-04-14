@@ -5,6 +5,8 @@
   id eventMonitor;
 }
 
+-(void)onTimeout:(NSTimer *) timer;
+
 @property (assign) VALUE rb_monitor;
 
 @end
