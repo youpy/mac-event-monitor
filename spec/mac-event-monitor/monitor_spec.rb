@@ -8,19 +8,32 @@ describe Monitor do
   end
 
   it 'should monitor mouse down events' do
-    pending 'how to test?'
+    result = 0
+    robot = Mac::Robot.new
 
     monitor = subject
-    result = false
-
     monitor.add_listener(:mouse_down) do |event|
-      result = true
+      result += 1
     end
 
-    result.should_not be_true
+    result.should be_zero
 
-    monitor.run
+    EM.run do
+      [1, 1.5].each do |t|
+        EM.add_timer(t) do
+          robot.mouse_press
+        end
+      end
 
-    result.should be_true
+      EM.add_timer(2) do
+        EM.stop
+      end
+
+      EM.add_periodic_timer(0.1) do
+        monitor.run(0.1)
+      end
+    end
+
+    result.should be >= 2
   end
 end
