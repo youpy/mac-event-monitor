@@ -1,9 +1,16 @@
-require "mac-event-monitor/version"
+require 'mac-event-monitor/version'
+require 'event_monitor'
 
 module Mac
-  module Event
-    module Monitor
-      # Your code goes here...
+  class EventMonitor
+    def initialize
+      add_global_monitor
+    end
+
+    def add_listener(type, &block)
+    end
+
+    def run(seconds)
     end
   end
 end
