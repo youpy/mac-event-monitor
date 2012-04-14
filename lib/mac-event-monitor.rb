@@ -1,16 +1,11 @@
 require 'mac-event-monitor/version'
-require 'event_monitor'
 
 module Mac
-  class EventMonitor
-    def initialize
-      add_global_monitor
-    end
-
-    def add_listener(type, &block)
-    end
-
-    def run(seconds)
-    end
+  module EventMonitor
   end
 end
+
+require 'event_monitor'
+require 'mac-event-monitor/monitor.rb'
+require 'mac-event-monitor/event.rb'
+require 'mac-event-monitor/event/mouse_event.rb'

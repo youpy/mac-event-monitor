@@ -1,44 +1,70 @@
 #import "event_monitor.h"
 
-static VALUE rb_cEventMonitor;
+@implementation EventMonitorAppDelegate
 
-struct EventMonitorObject {};
+@synthesize rb_monitor;
 
-void cEventMonitor_free(void *ptr) {
-  free(ptr);
-}
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+  NSEventMask mask;
 
-VALUE createInstance() {
-  struct EventMonitorObject *obj;
+  mask =
+      NSLeftMouseUpMask
+    | NSRightMouseUpMask
+    | NSOtherMouseUpMask
+    | NSLeftMouseDownMask
+    | NSRightMouseDownMask
+    | NSOtherMouseDownMask
+    | NSLeftMouseDraggedMask
+    | NSRightMouseDraggedMask
+    | NSOtherMouseDraggedMask
+    | NSMouseMovedMask
+    // | NSScrollWheelMask
+    // | NSTabletPointMask
+    // | NSTabletProximityMask
+    // | NSKeyDownMask
+    ;
 
-  obj = malloc(sizeof(struct EventMonitorObject));
+  eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
+                                                        handler:^(NSEvent *incomingEvent) {
+      VALUE event;
 
-  return Data_Wrap_Struct(rb_cEventMonitor, 0, cEventMonitor_free, obj);
-}
-
-static VALUE cEventMonitor_add_global_monitor(int argc, VALUE *argv, VALUE self)
-{
-  [NSEvent addGlobalMonitorForEventsMatchingMask:(NSLeftMouseDownMask)
-                                         handler:^(NSEvent *incomingEvent) {
-      //NSWindow *targetWindowForEvent = [incomingEvent window];
-      NSLog(@"Got a mouse click event at %@", NSStringFromPoint([incomingEvent locationInWindow]));
+      event = rb_str_new2([[incomingEvent description] UTF8String]);
+      rb_funcall(rb_monitor, rb_intern("receive_event"), 1, event);
     }];
+}
+
+@end
+
+static VALUE rb_cMonitor;
+
+static VALUE cMonitor_run_forever(int argc, VALUE *argv, VALUE self)
+{
+  EventMonitorAppDelegate *delegate;
+
+  delegate = [EventMonitorAppDelegate new];
+  delegate.rb_monitor = self;
+
+  [NSApplication sharedApplication];
+  [NSApp setDelegate: delegate];
+  [NSApp run];
 
   return Qnil;
 }
 
-static VALUE cEventMonitor_run_forever(int argc, VALUE *argv, VALUE self)
+static VALUE cMonitor_stop(int argc, VALUE *argv, VALUE self)
 {
-  [[NSRunLoop currentRunLoop] run];
+  [NSApplication sharedApplication];
+  [NSApp stop:nil];
 
   return Qnil;
 }
 
 void Init_event_monitor(void){
-  VALUE rb_mMac;
+  VALUE rb_mMac, rb_mEventMonitor;
 
   rb_mMac = rb_define_module("Mac");
-  rb_cEventMonitor = rb_define_class_under(rb_mMac, "EventMonitor", rb_cObject);
-  rb_define_method(rb_cEventMonitor, "add_global_monitor", cEventMonitor_add_global_monitor, -1);
-  rb_define_method(rb_cEventMonitor, "run_loop", cEventMonitor_run_forever, -1);
+  rb_mEventMonitor = rb_define_module_under(rb_mMac, "EventMonitor");
+  rb_cMonitor = rb_define_class_under(rb_mEventMonitor, "Monitor", rb_cObject);
+  rb_define_method(rb_cMonitor, "stop", cMonitor_stop, -1);
+  rb_define_method(rb_cMonitor, "run_forever", cMonitor_run_forever, -1);
 }
