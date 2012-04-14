@@ -4,8 +4,8 @@ require File.expand_path('../lib/mac-event-monitor/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["youpy"]
   gem.email         = ["youpy@buycheapviagraonlinenow.com"]
-  gem.description   = %q{A Library to Monitor User Interaction}
-  gem.summary       = %q{A Library to Monitor User Interaction}
+  gem.description   = %q{A Library to Monitor User Interactions}
+  gem.summary       = %q{A Library to Monitor User Interactions}
   gem.homepage      = ""
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }

@@ -1,6 +1,6 @@
 # mac-event-monitor
 
-A Library to Monitor User Interaction
+A Library to Monitor User Interactions
 
 ## Installation
 
