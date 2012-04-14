@@ -4,17 +4,17 @@ A Library to Monitor User Interaction
 
 ## Installation
 
- $ gem install mac-event-monitor
+    $ gem install mac-event-monitor
 
 ## Usage
 
- require 'mac-event-monitor'
+    require 'mac-event-monitor'
 
- monitor = Mac::EventMonitor::Monitor.new
- monitor.add_listener(:mouse_down) do |event|
-   puts [event.location.x, event.location.y].join(',')
- end
- monitor.run
+    monitor = Mac::EventMonitor::Monitor.new
+    monitor.add_listener(:mouse_down) do |event|
+      puts [event.location.x, event.location.y].join(',')
+    end
+    monitor.run
 
 ## Contributing
 
