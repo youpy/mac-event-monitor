@@ -40,14 +40,15 @@
 
   // http://www.cocoabuilder.com/archive/cocoa/219842-nsapp-stop.html
   event = [NSEvent otherEventWithType: NSApplicationDefined
-                                      location: NSMakePoint(0,0)
-                                 modifierFlags: 0
-                                     timestamp: 0.0
-                                  windowNumber: 0
-                                       context: nil
-                                       subtype: 0
-                                         data1: 0
-                                         data2: 0];
+                             location: NSMakePoint(0,0)
+                        modifierFlags: 0
+                            timestamp: 0.0
+                         windowNumber: 0
+                              context: nil
+                              subtype: 0
+                                data1: 0
+                                data2: 0];
+
   [NSApp postEvent: event atStart: true];
 }
 
