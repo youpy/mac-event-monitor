@@ -10,9 +10,7 @@ extension_name = 'event_monitor'
 # Set your target name
 dir_config(extension_name)
 
-$LDFLAGS += ' -framework ApplicationServices -framework AppKit'
-
-have_header(extension_name)
+$LDFLAGS += ' -framework AppKit'
 
 # Do the work
 create_makefile(extension_name)
