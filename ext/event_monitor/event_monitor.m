@@ -63,11 +63,11 @@ static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
 
   rb_scan_args(argc, argv, "1", &stopAfter);
 
-  delegate = [EventMonitorAppDelegate new];
-  delegate.rb_monitor = self;
-
-  [NSApplication sharedApplication];
-  [NSApp setDelegate: delegate];
+  if(!(delegate = [[NSApplication sharedApplication] delegate])) {
+    delegate = [[EventMonitorAppDelegate alloc] init];
+    delegate.rb_monitor = self;
+    [NSApp setDelegate: delegate];
+  }
 
   if(stopAfter != Qnil) {
     [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)NUM2INT(stopAfter)
