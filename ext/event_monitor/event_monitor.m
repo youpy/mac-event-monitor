@@ -26,10 +26,7 @@
 
   eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
                                                         handler:^(NSEvent *incomingEvent) {
-      VALUE event;
-
-      event = rb_str_new2([[incomingEvent description] UTF8String]);
-      rb_funcall(rb_monitor, rb_intern("receive_event"), 1, event);
+      rb_funcall(rb_monitor, rb_intern("receive_event"), 1, rb_str_new2([[incomingEvent description] UTF8String]));
     }];
 }
 
