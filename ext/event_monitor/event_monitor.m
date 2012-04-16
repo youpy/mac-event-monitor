@@ -33,6 +33,8 @@
 - (void)onTimeout:(NSTimer *)timer {
   NSEvent *event;
 
+  [timer release];
+
   [[NSApplication sharedApplication] stop:nil];
   //[NSEvent removeMonitor:eventMonitor];
 
