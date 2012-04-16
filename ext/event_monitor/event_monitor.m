@@ -69,7 +69,7 @@ static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
   [NSApplication sharedApplication];
   [NSApp setDelegate: delegate];
 
-  if(stopAfter) {
+  if(stopAfter != Qnil) {
     [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)NUM2INT(stopAfter)
                                      target:delegate
                                    selector:@selector(onTimeout:)
