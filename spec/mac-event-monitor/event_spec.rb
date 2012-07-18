@@ -12,4 +12,13 @@ describe Event do
     event.location.x.should be_an_instance_of(Float)
     event.location.y.should be_an_instance_of(Float)
   end
+
+  it 'should create event from description with space' do
+    event = Event.create_from_description('NSEvent: type=KeyDown loc=(184,646) time=68067.5 flags=0x20104 win=0x0 winNum=0 ctxt=0x0 chars=" " unmodchars=" " repeat=0 keyCode=49')
+
+    event.should be_an_instance_of(KeyboardEvent)
+    event.type.should equal(:key_down)
+    event.keycode.should equal(49)
+    event.shift_key?.should be_true
+  end
 end

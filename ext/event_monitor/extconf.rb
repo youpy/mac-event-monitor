@@ -12,5 +12,11 @@ dir_config(extension_name)
 
 $LDFLAGS += ' -framework AppKit'
 
+begin
+  MACRUBY_VERSION # Only MacRuby has this constant.
+  $CFLAGS += ' -fobjc-gc' # Enable MacOSX's GC for MacRuby
+rescue
+end
+
 # Do the work
 create_makefile(extension_name)

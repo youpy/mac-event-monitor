@@ -3,16 +3,15 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 include Mac::EventMonitor
 
 describe Monitor do
-  subject do
-    Monitor.new
+  before do
+    @monitor = Monitor.new
   end
 
   it 'should monitor mouse down events' do
     result = 0
     robot = Mac::Robot.new
 
-    monitor = subject
-    monitor.add_listener(:mouse_down) do |event|
+    @monitor.add_listener(:mouse_down) do |event|
       result += 1
     end
 
@@ -30,7 +29,37 @@ describe Monitor do
       end
 
       EM.add_periodic_timer(0.1) do
-        monitor.run(0.1)
+        @monitor.run(0.1)
+      end
+    end
+
+    result.should be >= 2
+  end
+
+  it 'should monitor key down events' do
+    result = 0
+    robot = Mac::Robot.new
+
+    @monitor.add_listener(:key_down) do |event|
+      result += 1
+    end
+
+    result.should be_zero
+
+    EM.run do
+      [1, 1.5].each do |t|
+        EM.add_timer(t) do
+          robot.key_press(0x04)
+          #robot.key_release(0x04)
+        end
+      end
+
+      EM.add_timer(2) do
+        EM.stop
+      end
+
+      EM.add_periodic_timer(0.1) do
+        @monitor.run(0.1)
       end
     end
 

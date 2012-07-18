@@ -5,10 +5,10 @@ module Mac
 
       class << self
         def create_from_description(description)
-          _, *atts_as_string = description.split(/\s+/)
+          _, *atts_as_string = description.split(/ +/)
 
-          attrs = atts_as_string.inject({}) do |result, attr_as_string|
-            name, value = attr_as_string.scan(/^([^=]+)=(.+)$/)[0]
+          attrs = (atts_as_string.join(' ') + ' ').scan(/([^=]+)=([^=]+) (?=\w?)/).inject({}) do |result, pair|
+            name, value = pair
             result[name.to_sym] = value
             result
           end
@@ -34,6 +34,10 @@ module Mac
             MouseEvent.new(:mouse_drag, attrs[:loc], :right)
           when 'OMouseDragged'
             MouseEvent.new(:mouse_drag, attrs[:loc], :other)
+          when 'KeyDown'
+            KeyboardEvent.new(:key_down, attrs[:keyCode], attrs[:flags])
+          when 'KeyUp'
+            KeyboardEvent.new(:key_up, attrs[:keyCode], attrs[:flags])
           end
         end
       end

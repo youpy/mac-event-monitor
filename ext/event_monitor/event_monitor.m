@@ -1,42 +1,37 @@
 #import "event_monitor.h"
 
+NSEventMask mask =
+  NSLeftMouseUpMask
+  | NSRightMouseUpMask
+  | NSOtherMouseUpMask
+  | NSLeftMouseDownMask
+  | NSRightMouseDownMask
+  | NSOtherMouseDownMask
+  | NSLeftMouseDraggedMask
+  | NSRightMouseDraggedMask
+  | NSOtherMouseDraggedMask
+  | NSMouseMovedMask
+  | NSKeyDownMask
+  | NSKeyUpMask
+  // | NSScrollWheelMask
+  // | NSTabletPointMask
+  // | NSTabletProximityMask
+  ;
+
 @implementation EventMonitorAppDelegate
 
-@synthesize rb_monitor;
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-  NSEventMask mask;
-
-  mask =
-      NSLeftMouseUpMask
-    | NSRightMouseUpMask
-    | NSOtherMouseUpMask
-    | NSLeftMouseDownMask
-    | NSRightMouseDownMask
-    | NSOtherMouseDownMask
-    | NSLeftMouseDraggedMask
-    | NSRightMouseDraggedMask
-    | NSOtherMouseDraggedMask
-    | NSMouseMovedMask
-    // | NSScrollWheelMask
-    // | NSTabletPointMask
-    // | NSTabletProximityMask
-    // | NSKeyDownMask
-    ;
-
-  eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
-                                                        handler:^(NSEvent *incomingEvent) {
-      rb_funcall(rb_monitor, rb_intern("receive_event"), 1, rb_str_new2([[incomingEvent description] UTF8String]));
-    }];
+  [NSEvent addGlobalMonitorForEventsMatchingMask:mask
+                                         handler:^(NSEvent *incomingEvent) {}];
 }
 
 - (void)onTimeout:(NSTimer *)timer {
   NSEvent *event;
 
+  [NSEvent removeMonitor:[timer userInfo]];
   [timer release];
 
   [[NSApplication sharedApplication] stop:nil];
-  //[NSEvent removeMonitor:eventMonitor];
 
   // http://www.cocoabuilder.com/archive/cocoa/219842-nsapp-stop.html
   event = [NSEvent otherEventWithType: NSApplicationDefined
@@ -60,20 +55,25 @@ static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
 {
   EventMonitorAppDelegate *delegate;
   VALUE stopAfter;
+  id eventMonitor;
 
   rb_scan_args(argc, argv, "1", &stopAfter);
 
   if(!(delegate = [[NSApplication sharedApplication] delegate])) {
     delegate = [[EventMonitorAppDelegate alloc] init];
-    delegate.rb_monitor = self;
     [NSApp setDelegate: delegate];
   }
+
+  eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
+                                                        handler:^(NSEvent *incomingEvent) {
+      rb_funcall(self, rb_intern("receive_event"), 1, rb_str_new2([[incomingEvent description] UTF8String]));
+    }];
 
   if(stopAfter != Qnil) {
     [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)NUM2INT(stopAfter)
                                      target:delegate
                                    selector:@selector(onTimeout:)
-                                   userInfo:nil
+                                   userInfo:eventMonitor
                                     repeats:NO];
   }
 
