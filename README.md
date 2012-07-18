@@ -9,10 +9,23 @@ A Library to Monitor User Interactions
 ## Usage
 
     require 'mac-event-monitor'
-
+    
     monitor = Mac::EventMonitor::Monitor.new
+
+### Monitor Mouse Event
+
     monitor.add_listener(:mouse_down) do |event|
       puts [event.location.x, event.location.y].join(',')
+    end
+    monitor.run
+
+### Monitor Keyboard Event
+
+You need to enable "Access to assistive devices" in the Universal Access preference pane to monitor keyboard event.
+
+    monitor.add_listener(:key_down) do |event|
+      p event.keycode
+      p event.shift_key?
     end
     monitor.run
 
