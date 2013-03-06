@@ -3,8 +3,8 @@ module Mac
     class KeyboardEvent < Event
       attr_reader :keycode, :flags
 
-      def initialize(type, location, keycode, flags)
-        super(type, location)
+      def initialize(type, time, location, keycode, flags)
+        super(type, time, location)
 
         @keycode = keycode.to_i
         @flags   = flags.to_i(16)
@@ -36,6 +36,10 @@ module Mac
 
       def function_key?
         check_flag(23)
+      end
+
+      def data
+        super + [keycode, flags.to_s(16)]
       end
 
       private

@@ -3,10 +3,14 @@ module Mac
     class MouseEvent < Event
       attr_reader :button
 
-      def initialize(type, location, button)
-        super(type, location)
+      def initialize(type, time, location, button)
+        super(type, time, location)
 
-        @button = button
+        @button = button && button.to_sym
+      end
+
+      def data
+        super + [button]
       end
     end
   end

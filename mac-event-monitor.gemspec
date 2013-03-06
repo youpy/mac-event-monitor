@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Mac::EventMonitor::VERSION
 
+  gem.add_dependency('json')
   gem.add_development_dependency('rspec', ['~> 2.8.0'])
   gem.add_development_dependency('mac-robot')
   gem.add_development_dependency('eventmachine')
