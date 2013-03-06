@@ -83,7 +83,12 @@ static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
 
   eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
                                                         handler:^(NSEvent *incomingEvent) {
-      rb_funcall(self, rb_intern("receive_event"), 2, rb_str_new2([[incomingEvent description] UTF8String]), rb_float_new(getScreenHeight()));
+      rb_funcall(self,
+                 rb_intern("receive_event"),
+                 3,
+                 rb_str_new2([[incomingEvent description] UTF8String]),
+                 rb_float_new([incomingEvent timestamp]),
+                 rb_float_new(getScreenHeight()));
     }];
 
   if(stopAfter != Qnil) {

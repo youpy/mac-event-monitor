@@ -6,7 +6,7 @@ module Mac
       attr_reader :type, :time, :location
 
       class << self
-        def create_from_description(description, screen_height)
+        def create_from_description(description, time, screen_height)
           _, *atts_as_string = description.split(/ +/)
 
           attrs = (atts_as_string.join(' ') + ' ').scan(/([^=]+)=([^=]+) (?=\w?)/).inject({}) do |result, pair|
@@ -17,8 +17,6 @@ module Mac
 
           location = parse_location(attrs[:loc])
           location.y = screen_height - location.y
-
-          time = attrs[:time].to_f
 
           case attrs[:type]
           when 'LMouseUp'
