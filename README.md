@@ -61,8 +61,6 @@ require 'json'
 events = JSON.parse(ARGF.read)
 robot = Mac::Robot.new
 
-return if events.size == 0
-
 events.each_with_index do |event, index|
   case event.type
   when :mouse_move
