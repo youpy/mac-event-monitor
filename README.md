@@ -29,7 +29,7 @@ You need to enable "Access to assistive devices" in the Universal Access prefere
     end
     monitor.run
 
-### Record/Play Mouse Events
+### Record/Play Events
 
 ```
 ruby recorder.rb | ruby player.rb
