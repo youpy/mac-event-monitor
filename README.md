@@ -32,7 +32,7 @@ You need to enable "Access to assistive devices" in the Universal Access prefere
 ### Record/Play Events
 
 ```
-ruby recorder.rb | ruby player.rb
+$ ruby recorder.rb | ruby player.rb
 ```
 
 recorder.rb
@@ -67,6 +67,16 @@ events.each_with_index do |event, index|
   case event.type
   when :mouse_move
     robot.mouse_move(event.location.x, event.location.y)
+  when :mouse_down
+    robot.mouse_move(event.location.x, event.location.y)
+    robot.mouse_press
+  when :mouse_up
+    robot.mouse_move(event.location.x, event.location.y)
+    robot.mouse_release
+  when :key_down
+    robot.key_press(event.keycode)
+  when :key_up
+    robot.key_release(event.keycode)
   end
 
   if n = events[index + 1]
