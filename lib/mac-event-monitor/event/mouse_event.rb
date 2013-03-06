@@ -1,19 +1,12 @@
 module Mac
   module EventMonitor
     class MouseEvent < Event
-      attr_reader :location, :button
+      attr_reader :button
 
-      def initialize(type, location_as_str, button)
-        super(type)
+      def initialize(type, location, button)
+        super(type, location)
 
-        @location = parse_location(location_as_str)
         @button = button
-      end
-
-      private
-
-      def parse_location(location_as_str)
-        Struct.new(:x, :y).new(*location_as_str.scan(/[\d\.]+/).map {|v| v.to_f })
       end
     end
   end

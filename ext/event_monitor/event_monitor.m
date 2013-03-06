@@ -29,6 +29,7 @@ NSEventMask mask =
   NSEvent *event;
 
   [NSEvent removeMonitor:[timer userInfo]];
+  [timer invalidate];
   [timer release];
 
   [[NSApplication sharedApplication] stop:nil];
@@ -49,6 +50,22 @@ NSEventMask mask =
 
 @end
 
+double getScreenHeight()
+{
+  NSScreen *mainScreen = [NSScreen mainScreen];
+  NSScreen *firstScreen = [[NSScreen screens] objectAtIndex:0];
+
+  NSRect screenRect = [mainScreen visibleFrame];
+  double screenHeight = NSHeight(screenRect);
+
+  // http://stackoverflow.com/questions/3163343/how-can-i-detemine-which-screen-holds-the-menubar
+  if(mainScreen == firstScreen) {
+    screenHeight += 22;
+  }
+
+  return screenHeight;
+}
+
 static VALUE rb_cMonitor;
 
 static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
@@ -66,7 +83,7 @@ static VALUE cMonitor_run_app(int argc, VALUE *argv, VALUE self)
 
   eventMonitor = [NSEvent addGlobalMonitorForEventsMatchingMask:mask
                                                         handler:^(NSEvent *incomingEvent) {
-      rb_funcall(self, rb_intern("receive_event"), 1, rb_str_new2([[incomingEvent description] UTF8String]));
+      rb_funcall(self, rb_intern("receive_event"), 2, rb_str_new2([[incomingEvent description] UTF8String]), rb_float_new(getScreenHeight()));
     }];
 
   if(stopAfter != Qnil) {
