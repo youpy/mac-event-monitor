@@ -29,6 +29,52 @@ You need to enable "Access to assistive devices" in the Universal Access prefere
     end
     monitor.run
 
+### Record/Play Mouse Events
+
+```
+ruby recorder.rb | ruby player.rb
+```
+
+recorder.rb
+
+```ruby
+require 'mac-event-monitor'
+require 'json'
+
+e = Mac::EventMonitor::Monitor.new
+events = []
+e.add_listener {|e|
+  events << e
+}
+e.run(3)
+
+puts events.to_json
+```
+
+player.rb
+
+```ruby
+require 'mac-event-monitor'
+require 'mac-robot'
+require 'json'
+
+events = JSON.parse(ARGF.read)
+robot = Mac::Robot.new
+
+return if events.size == 0
+
+events.each_with_index do |event, index|
+  case event.type
+  when :mouse_move
+    robot.mouse_move(event.location.x, event.location.y)
+  end
+
+  if n = events[index + 1]
+    sleep n.time - event.time
+  end
+end
+```
+
 ## Contributing
 
 1. Fork it
