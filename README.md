@@ -67,11 +67,11 @@ events.each_with_index do |event, index|
   case event.type
   when :mouse_move
     robot.mouse_move(event.location.x, event.location.y)
+  when :mouse_drag
+    robot.mouse_drag(event.location.x, event.location.y)
   when :mouse_down
-    robot.mouse_move(event.location.x, event.location.y)
     robot.mouse_press
   when :mouse_up
-    robot.mouse_move(event.location.x, event.location.y)
     robot.mouse_release
   when :key_down
     robot.key_press(event.keycode)
