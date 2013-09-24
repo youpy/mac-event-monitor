@@ -64,7 +64,7 @@ require 'mac-event-monitor'
 require 'mac-robot'
 require 'json'
 
-events = JSON.parse(ARGF.read)
+events = JSON.load(ARGF.read)
 robot = Mac::Robot.new
 
 events.each_with_index do |event, index|
