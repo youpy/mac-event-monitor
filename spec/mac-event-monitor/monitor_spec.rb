@@ -1,10 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-include Mac::EventMonitor
-
-describe Monitor do
+describe Mac::EventMonitor::Monitor do
   before do
-    @monitor = Monitor.new
+    @monitor = Mac::EventMonitor::Monitor.new
   end
 
   it 'should monitor mouse down events' do
